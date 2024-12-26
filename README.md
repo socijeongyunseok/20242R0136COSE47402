@@ -1,6 +1,6 @@
 # 20242R0136COSE47402
 
-# Modeling Incomplete Economic Socialism using Deep Learning
+# Modeling Incomplete Information Economic Socialism using Deep Learning
 
 ## Introduction
 
@@ -25,39 +25,61 @@ We develop a unified computational model that:
 
 ### Economic Model Formulation
 We consider \( N \) regions indexed by \( i \) with capital \( k_i \), labor \( l_i \), and productivity parameter \( \theta_i \). The production follows a Cobb-Douglas form:
-\[
+
+$$
 y_i = \exp(Z) \cdot (\theta_i)^\alpha \cdot (k_i)^\beta \cdot (l_i)^{1-\beta},
-\]
+$$
+
 where \( Z \) is a productivity shock.
 
 Utility for region \( i \):
-\[
+
+$$
 U(c_i,\theta_i) = \sqrt{c_i \theta_i} - a\,c_i,
-\]
+$$
+
 and the total resource stock \( R \) evolves as:
-\[
+
+$$
 R_{t+1} = R_t + g(R_t) - \sum_{i}(c_i + x_i), \quad g(R) = r R \left(1 - \frac{R}{K}\right).
-\]
+$$
 
 ### Constraints
-- **Incentive Compatibility (IC):** Ensures truth-telling about types.
-- **Individual Rationality (IR):** Guarantees no agent’s utility falls below a baseline \( \bar{U} \).
-- **Ostrom’s Cooperation Criterion:** Penalizes high variance in allocations over time.
+- **Incentive Compatibility (IC):** Ensures truth-telling about types:
+
+$$
+L_{\text{IC}} = \max(0, U_{\text{deviant}} - U_{\text{truthful}}),
+$$
+
+- **Individual Rationality (IR):** Guarantees no agent’s utility falls below a baseline \( \bar{U} \):
+
+$$
+L_{\text{IR}} = \mathbb{E}\left[\max(0,\bar{U}-U_i)\right].
+$$
+
+- **Ostrom’s Cooperation Criterion:** Penalizes high variance in allocations over time:
+
+$$
+L_{\text{Ostrom}} = \text{Var}(c_{i,t} \text{ over } t).
+$$
 
 ### Deep Learning Integration
 - **VAE:** Infers latent types \( \theta_i \) from noisy observations.
 - **GNN:** Captures inter-regional dependencies.
 - **Policy Network (PN):** Outputs allocations \( c_i, x_i, l_i \), trained via RL:
-  \[
-  L_{\text{Policy}} = -\mathbb{E}[ \log \pi_\theta(a|s) R(a,s)],
-  \]
-  where \( \pi_\theta \) is the policy parameterized by a neural network.
+
+$$
+L_{\text{Policy}} = -\mathbb{E}[ \log \pi_\theta(a|s) R(a,s)],
+$$
+
+where \( \pi_\theta \) is the policy parameterized by a neural network.
 
 ### Combined Loss
 The planner’s objective is:
-\[
+
+$$
 L_{\text{total}} = \lambda_{\text{VAE}}L_{\text{VAE}} + \lambda_{\text{IC}}L_{\text{IC}} + \lambda_{\text{IR}}L_{\text{IR}} + \lambda_{\text{Ostrom}}L_{\text{Ostrom}} + \lambda_{\text{Resource}}L_{\text{Resource}} + \lambda_{\text{Policy}}L_{\text{Policy}}.
-\]
+$$
 
 ---
 
@@ -68,6 +90,7 @@ We simulate a socialist economy with \( N=5 \) regions, each having distinct pro
 
 ### Results
 Quantitative results show that incorporating IC and Ostrom constraints improves stability and utility:
+
 | Model              | Final Utility | IC Penalty | Variance (Allocations) |
 |--------------------|---------------|------------|------------------------|
 | Base Model         | 1.20          | 0.05       | 0.08                  |
